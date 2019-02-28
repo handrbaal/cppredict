@@ -1,0 +1,93 @@
+This is a description of the MATLAB source code scripts for the cpPredictor algorithm described in 
+Panek et al. ( https://doi.org/10.3389/fgene.2017.00147 ). For explanation of the terms used in this 
+documentation, please, refer to the paper shown above.
+
+If you want to use and/or modify the scripts, please contact the cpPredictor webserver authors.
+
+The hierarchy and dependency of the cpPredictor algorithm scripts is shown in Figure 1.
+
+
+                                .----------.
+                               | input data |
+                                '----------'
+                                      |
+                                      V
+                          +------------------------+
+                          | run_pactool_pairwise.m |
+                          +------------------------+
+                                      |
+                  verified input data |
+                                      V
+ .-------------------.      +--------------------+ <-> test_JJ_live.m
+| predicted structure | <-- | pactool_pairwise.m |
+ '-------------------'      +--------------------+ <-> try_to_extend_mechanically_lonely_pairs.m
+                                     |  A
+                 verified input data |  | intermediate structure
+                                     V  |
+                           +----------------------+
+                           | copy_pairwise_hard.m |
+                           +----------------------+
+                                      A
+                                      | intermediate structure
+                                      V
+                   intermediate  +---------+  intermediate
+     find_loops.m <------------> | paste.m | <------------> find_stems1.m
+                     structure   +---------+   structure
+                                      A
+                                      | intermediate structure
+                                      V
+                              find_hairpins1.m
+
+Figure 1. A scheme of cpPredictor algorithm. Scripts are denoted by their names (with the '.m' 
+extension). Names of calling scripts are in grey boxes. Arrows depict script dependency and are 
+accompanied with exchanged data description.
+
+
+Follows the list of the cpPredictor scripts and functions with their brief descriptions of their 
+function.
+Calling scripts:
+----------------
+copy__pairwise_hard.m - 1) creates the intermediate structure, 
+                      - 2) merges copied structure of consistent structural elements with de novo 
+                           predicted structure of inconsistent structural elements into the final 
+                           predicted structure.
+pactool_pairwise.m - 1) implements the main loop of the prediction, 
+                   - 2) transform the intermediate structure into the predicted structure and 
+                        produce z-score of the predicted structure by bootstrap test.
+paste.m - 1) identification of structural elements (hairpins and stems) in the intermediate 
+             structure and their consistency, 
+        - 2) de novo prediction of inconsistent structural elements, 
+        - 3) incorporation of the de novo predicted structural elements into the predicted 
+             structure.
+run_pactool_pairwise.m - does all necessary stuff (check data, parameters format, and so on), then 
+                         calls pactool_pairwise.m.
+
+Called scripts:
+---------------
+find_hairpins1.m - identifies hairpins in the intermediate structure.
+find_loops.m - identifies loops in the intermediate structure.
+find_stems1.m - identifies stems in the intermediate structure.
+test_JJ_live.m - bootstrap of the predicted structure.
+try_to_extend_mechanically_lonely_pairs.m - tries extend lonely pairs into a stem without 
+                                            a biological meaning (only when the parameter 
+                                            EXTEND_MECHANICALLY_LONELY_PAIRS = 1.)
+
+Functions:
+----------
+br2bpseq.m
+br2inCAN.m
+br2m.m
+clean_fasta_RNA.m
+clean_RNA_sequence.m
+cut_string.m
+find_lonely_bps.m - identifies lonely base pairs in dot-bracket format.
+fvi.m
+get_nc_bps.m
+getunbalancedparsCAN.m
+check_br.m
+check_fasta.m
+isbalancedbr.m
+iscanstr.m
+put_info_into_ps_pic.m
+reformat_fasta.m
+
